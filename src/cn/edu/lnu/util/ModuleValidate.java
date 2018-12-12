@@ -34,63 +34,75 @@ public class ModuleValidate {
         try {
             is = new FileInputStream("D:/example.xls");
             HSSFWorkbook excel = new HSSFWorkbook(is);
-
-            // 循环工作表Sheet
-            for (int numSheet = 0; numSheet < excel.getNumberOfSheets(); numSheet++) {
-                HSSFSheet sheet = excel.getSheetAt(numSheet);
-                if (sheet == null)
-                    continue;
-                // 循环行Row
-                for (int rowNum = 0; rowNum < sheet.getLastRowNum(); rowNum++) {
-                    HSSFRow row = sheet.getRow(rowNum);
-                    if (row == null)
-                        continue;
-                    moudle = new Module();
-
-                    HSSFCell cell0 = row.getCell(0);
-                    if (cell0 == null)
-                        continue;
-                    moudle.setId((int)cell0.getNumericCellValue());
-                    HSSFCell cell1 = row.getCell(1);
-                    if (cell1 == null)
-                        continue;
-                    moudle.setTitle(cell1.getStringCellValue());
-                    HSSFCell cell2 = row.getCell(2);
-                    if (cell2 == null)
-                        continue;
-                    moudle.setContent(cell2.getStringCellValue());
-                    HSSFCell cell3 = row.getCell(3);
-                    if (cell3 != null && !("".equals(cell3.getStringCellValue()))){
-                        moudle.setDate(new SimpleDateFormat("yyyy-MM-dd").parse(cell3.getStringCellValue()));
-                    }else {
-                        moudle.setDate(new Date());
-                    }
-                    HSSFCell cell4 = row.getCell(4);
-                    if (cell4 == null)
-                        continue;
-                    moudle.setKeywords(cell4.getStringCellValue());
-                    HSSFCell cell5 = row.getCell(5);
-                    if (cell5 == null)
-                        continue;
-                    if(!((int)(cell5.getNumericCellValue()) >= 1 && (int)(cell5.getNumericCellValue()) <= 10) ){
-                        logger.error("一级学科超出，系统退出，请重新检查...");
-                        System.exit(-1);
-                    }
-                    moudle.setFid((int)cell5.getNumericCellValue());
-                    HSSFCell cell6 = row.getCell(6);
-                    if (cell6 == null)
-                        continue;
-                    if(!((int)(cell6.getNumericCellValue()) >= 1 && (int)(cell6.getNumericCellValue()) <= 81) ){
-                        logger.error("二级学科超出，系统退出，请重新检查...");
-                        System.exit(-1);
-                    }
-                    moudle.setMid((int)cell6.getNumericCellValue());
-                    HSSFCell cell7 = row.getCell(7);
-                    if (cell7 == null)
-                        continue;
-                    moudle.setAuthor(cell7.getStringCellValue());
-                    list.add(moudle);
+            HSSFSheet sheet = excel.getSheetAt(0);
+            if (sheet == null){
+                logger.info("excel内容为空，请核对后重新执行...");
+                System.exit(-1);
+            }
+            // 循环行Row
+            for (int rowNum = 0; rowNum <= sheet.getLastRowNum(); rowNum++) {
+                HSSFRow row = sheet.getRow(rowNum);
+                if (row == null){
+                    logger.info("excel内容为空，请核对后重新执行...");
+                    System.exit(-1);
                 }
+                moudle = new Module();
+                HSSFCell cell0 = row.getCell(0);
+                if (cell0 == null){
+                    moudle.setId(0);
+                } else{
+                    moudle.setId((int)cell0.getNumericCellValue());
+                }
+                HSSFCell cell1 = row.getCell(1);
+                cell1.setCellType(Cell.CELL_TYPE_STRING);
+                if (cell1 == null || "".equals(cell1.getStringCellValue())){
+                    logger.error("标题为空，请检查，程序即将退出...");
+                    System.exit(-1);
+                }else{
+                    moudle.setTitle(cell1.getStringCellValue());
+                }
+                HSSFCell cell2 = row.getCell(2);
+                cell2.setCellType(Cell.CELL_TYPE_STRING);
+                if (cell2 == null || "".equals(cell2.getStringCellValue())){
+                    moudle.setContent("");
+                }else{
+                    moudle.setContent(cell2.getStringCellValue());
+                }
+                HSSFCell cell3 = row.getCell(3);
+                if (cell3 != null && !("".equals(cell3.getStringCellValue()))){
+                    moudle.setDate(new SimpleDateFormat("yyyy-MM-dd").parse(cell3.getStringCellValue()));
+                }else {
+                    moudle.setDate(new Date());
+                }
+                HSSFCell cell4 = row.getCell(4);
+                cell4.setCellType(Cell.CELL_TYPE_STRING);
+                if (cell4 == null){
+                    logger.error("关键字为空，请检查，程序即将退出...");
+                    System.exit(-1);
+                }else{
+                    moudle.setKeywords(cell4.getStringCellValue());
+                }
+                HSSFCell cell5 = row.getCell(5);
+                if (cell5 == null || cell5.getNumericCellValue() == 0.0){
+                    logger.error("一级学科为空，请检查，程序即将退出...");
+                    System.exit(-1);
+                }
+                if(!((int)(cell5.getNumericCellValue()) >= 1 && (int)(cell5.getNumericCellValue()) <= 10) ){
+                    logger.error("一级学科超出，系统退出，请重新检查...");
+                    System.exit(-1);
+                }
+                moudle.setFid((int)cell5.getNumericCellValue());
+                HSSFCell cell6 = row.getCell(6);
+                if (cell6 == null || cell6.getNumericCellValue() == 0.0){
+                    logger.error("二级学科为空，请检查，程序即将退出...");
+                    System.exit(-1);
+                }
+                if(!((int)(cell6.getNumericCellValue()) >= 1 && (int)(cell6.getNumericCellValue()) <= 81) ){
+                    logger.error("二级学科超出，系统退出，请重新检查...");
+                    System.exit(-1);
+                }
+                moudle.setMid((int)cell6.getNumericCellValue());
+                list.add(moudle);
             }
             logger.info("模板数据校验成功...");
         } catch (FileNotFoundException e) {
