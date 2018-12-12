@@ -72,10 +72,18 @@ public class ModuleValidate {
                     HSSFCell cell5 = row.getCell(5);
                     if (cell5 == null)
                         continue;
+                    if(!((int)(cell5.getNumericCellValue()) >= 1 && (int)(cell5.getNumericCellValue()) <= 10) ){
+                        logger.error("一级学科超出，系统退出，请重新检查...");
+                        System.exit(-1);
+                    }
                     moudle.setFid((int)cell5.getNumericCellValue());
                     HSSFCell cell6 = row.getCell(6);
                     if (cell6 == null)
                         continue;
+                    if(!((int)(cell6.getNumericCellValue()) >= 1 && (int)(cell6.getNumericCellValue()) <= 81) ){
+                        logger.error("二级学科超出，系统退出，请重新检查...");
+                        System.exit(-1);
+                    }
                     moudle.setMid((int)cell6.getNumericCellValue());
                     HSSFCell cell7 = row.getCell(7);
                     if (cell7 == null)
