@@ -40,7 +40,7 @@ public class ModuleValidate {
                 System.exit(-1);
             }
             // 循环行Row
-            for (int rowNum = 0; rowNum <= sheet.getLastRowNum(); rowNum++) {
+            for (int rowNum = 0; rowNum < sheet.getLastRowNum(); rowNum++) {
                 HSSFRow row = sheet.getRow(rowNum);
                 if (row == null){
                     logger.info("excel内容为空，请核对后重新执行...");
